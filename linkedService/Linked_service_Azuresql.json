@@ -1,0 +1,23 @@
+{
+	"name": "Linked_service_Azuresql",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "clinicaltraildatabase.database.windows.net",
+			"database": "Clnical_trail",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "prajwalprajs",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Linked_service_Keyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "azuresqlpswrd"
+			}
+		}
+	}
+}
