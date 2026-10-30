@@ -1,0 +1,18 @@
+{
+	"name": "Linked_serv_databricks",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405618894432925.5.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Linked_service_Keyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "databrickspswwrd"
+			}
+		}
+	}
+}
