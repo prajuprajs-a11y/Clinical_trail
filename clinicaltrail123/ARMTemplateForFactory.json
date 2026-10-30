@@ -59,36 +59,6 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Read_azrsql_ctrl_tableconfig tableid",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 2,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": {
-									"value": "select table_id from ctrl.table_config Where is_active = 1 and source_system ='@{pipeline().parameters.source_system}'",
-									"type": "Expression"
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "Ds_Azuresql",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
 						"name": "Ingest all table from lookup",
 						"type": "ForEach",
 						"dependsOn": [
@@ -207,6 +177,36 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Read_azrsql_ctrl_tableconfig tableid",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "\nselect table_id from ctrl.table_config\nwhere is_active = 1 and source_system='@{pipeline().parameters.source_system}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "Ds_Azuresql",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
 					}
 				],
 				"policy": {
@@ -219,7 +219,7 @@
 					},
 					"adf_run_id": {
 						"type": "string",
-						"defaultValue": "a3"
+						"defaultValue": "a1"
 					}
 				},
 				"variables": {
