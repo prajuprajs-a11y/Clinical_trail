@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read_azrsql_ctrl_tableconfig columns",
+				"name": "Read_azrsql_ctrl_tableconfig tableid",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select table_id from @{pipeline().parameters.Table_name}\nWhere is_active = 1 and source_system ='@{pipeline().parameters.source_system}'",
+							"value": "select table_id from ctrl.table_config Where is_active = 1 and source_system ='@{pipeline().parameters.source_system}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -36,7 +36,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Read_azrsql_ctrl_tableconfig columns",
+						"activity": "Read_azrsql_ctrl_tableconfig tableid",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,7 +45,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Read_azrsql_ctrl_tableconfig columns').output.value",
+						"value": "@activity('Read_azrsql_ctrl_tableconfig tableid').output.value",
 						"type": "Expression"
 					},
 					"activities": [
@@ -71,10 +71,6 @@
 			}
 		],
 		"parameters": {
-			"Table_name": {
-				"type": "string",
-				"defaultValue": "ctrl.table_config"
-			},
 			"source_system": {
 				"type": "string",
 				"defaultValue": "neon_postgres"

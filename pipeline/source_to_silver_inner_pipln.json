@@ -1,0 +1,11 @@
+{
+	"name": "source_to_silver_inner_pipln",
+	"properties": {
+		"parameters": {
+			"table_id": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
