@@ -3,9 +3,67 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup1",
+				"name": "Read azrsql ctrl_tablecnfg colums",
 				"type": "Lookup",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select * from ctrl.table_config Where table_id = '@{pipeline().parameters.table_id}' ",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Ds_Azuresql",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Start_Time",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Start_time",
+					"value": {
+						"value": "@formatDateTime(\n    convertFromUtc(utcNow(),'India Standard Time'),\n    'yyyy-MM-dd_HH:mm:ss'\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "source_to_landing ingetion",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Read azrsql ctrl_tablecnfg colums",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -13,12 +71,65 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "PostgreSqlV2Source",
+						"query": {
+							"value": "select * from PUBLIC.@{activity('Read azrsql ctrl_tablecnfg colums').output.firstRow.source_table_name}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Ds_postgresql",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Ds_Adls",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "landing",
+							"files": {
+								"value": "@concat(    \nactivity('Read azrsql ctrl_tablecnfg colums').output.firstRow.source_system,\n'/',\nactivity('Read azrsql ctrl_tablecnfg colums').output.firstRow.source_table_name,\n'/',\nvariables('Start_time')\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
 			"table_id": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"variables": {
+			"Start_time": {
+				"type": "String"
 			}
 		},
 		"annotations": []
