@@ -12,7 +12,8 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "databrickspswwrd"
-			}
+			},
+			"existingClusterId": "1030-134951-7pn5yxsr"
 		}
 	}
 }
