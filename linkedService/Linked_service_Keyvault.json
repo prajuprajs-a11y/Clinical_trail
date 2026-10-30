@@ -1,0 +1,10 @@
+{
+	"name": "Linked_service_Keyvault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://ClinicaltrialKeyvalult.vault.azure.net/"
+		}
+	}
+}
