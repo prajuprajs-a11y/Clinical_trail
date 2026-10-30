@@ -5,8 +5,6 @@
 			{
 				"name": "Ingest all table from lookup",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read_azrsql_ctrl_tableconfig tableid",
@@ -26,8 +24,6 @@
 						{
 							"name": "ingest from source to silver from innerpip",
 							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Failed",
 							"dependsOn": [
 								{
 									"activity": "insert status from audittable",
@@ -61,8 +57,6 @@
 						{
 							"name": "insert status from audittable",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -92,8 +86,6 @@
 						{
 							"name": "Update Failed status",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "ingest from source to silver from innerpip",
