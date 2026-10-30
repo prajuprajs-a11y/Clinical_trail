@@ -3,37 +3,10 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read_azrsql_ctrl_tableconfig tableid",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 2,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "select table_id from ctrl.table_config Where is_active = 1 and source_system ='@{pipeline().parameters.source_system}'",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "Ds_Azuresql",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "Ingest all table from lookup",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read_azrsql_ctrl_tableconfig tableid",
@@ -53,6 +26,8 @@
 						{
 							"name": "ingest from source to silver from innerpip",
 							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Failed",
 							"dependsOn": [
 								{
 									"activity": "insert status from audittable",
@@ -86,6 +61,8 @@
 						{
 							"name": "insert status from audittable",
 							"type": "Script",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -115,6 +92,8 @@
 						{
 							"name": "Update Failed status",
 							"type": "Script",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "ingest from source to silver from innerpip",
@@ -149,6 +128,35 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Read_azrsql_ctrl_tableconfig tableid",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "\nselect table_id from ctrl.table_config\nwhere is_active = 1 and source_system='@{pipeline().parameters.source_system}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Ds_Azuresql",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
