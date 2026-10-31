@@ -307,7 +307,7 @@
 							"typeProperties": {
 								"variableName": "watermark_value",
 								"value": {
-									"value": "@activity('Read azrsql ctrl_tablecnfg colums').output.firstRow.watermark_value",
+									"value": "@activity('Read watermark value').output.firstRow.watermark_value",
 									"type": "Expression"
 								}
 							}
