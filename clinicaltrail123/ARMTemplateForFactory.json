@@ -219,7 +219,7 @@
 					},
 					"adf_run_id": {
 						"type": "string",
-						"defaultValue": "a5"
+						"defaultValue": "a2"
 					}
 				},
 				"variables": {
@@ -499,7 +499,7 @@
 									"type": "Expression"
 								},
 								"merge_keys": {
-									"value": "@coalesce(activity('Read azrsql ctrl_tablecnfg colums').output.firstRow.merge_keys ,'') ",
+									"value": "@coalesce(activity('Read azrsql ctrl_tablecnfg colums').output.firstRow.merge_keys,'') ",
 									"type": "Expression"
 								},
 								"load_type": {
